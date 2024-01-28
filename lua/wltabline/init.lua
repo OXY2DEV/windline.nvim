@@ -47,7 +47,12 @@ M.tab_name = function(num)
             if bufname == '' then
                 bufname = 'ツ'
             end
-            last_tab_name[num] = num .. ' ' .. bufname
+
+            if vim.g.WLtabnum == true then
+                last_tab_name[num] = num .. ' ' .. bufname
+            else
+                last_tab_name[num] = bufname
+            end
             return last_tab_name[num]
         else
             return last_tab_name[num] or ''
@@ -87,10 +92,15 @@ local default_config = {
         select        = { '', { 'NormalFg', 'NormalBg', 'bold' } },
         select_start  = { separators.block_thin .. ' ', { 'blue', 'NormalBg' } },
         select_end    = { ' ', { 'NormalFg', 'NormalBg' } },
-        select_fill   = { ' ', { 'NormalFg', 'NormalBg' } },
+        select_icon   = { ' S ', { 'NormalFg', 'NormalBg' } },
+        select_fill   = { ' ', { 'NormalBg', 'NormalBg' } },
+
         normal        = { '', { 'TabLineFg', 'TabLineBg' } },
         normal_start  = { ' ', { 'TabLineFg', 'TabLineBg' } },
         normal_end    = { ' ', { 'TabLineFg', 'TabLineBg' } },
+        normal_icon   = { ' N ', { 'TabLineFg', 'TabLineBg' } },
+        normal_fill   = { ' ', { 'NormalBg', 'NormalBg' } },
+
         normal_select = { ' ', { 'TabLineFg', 'TabLineBg' } },
         normal_last   = { ' ', { 'TabLineFg', 'TabLineBg' } },
     },
@@ -119,7 +129,13 @@ M.tab_template = function(template)
                 end
                 return {
                     { sep_text.select_start,      'select_start' },
+                    { sep_text.select_fill, 'select_fill'},
+                    { sep_text.select_icon, 'select_icon'},
+
+                    { sep_text.select_fill, 'select_fill'},
                     { M.tab_name(data.tab_index), 'select' },
+                    { sep_text.select_fill, 'select_fill'},
+
                     { text_end,                   hl_end },
                 }
             else
@@ -135,7 +151,13 @@ M.tab_template = function(template)
                 end
                 return {
                     { text_start,                 'normal_start' },
+                    { sep_text.normal_fill, 'normal_fill'},
+                    { sep_text.normal_icon, 'normal_icon'},
+                    
+                    { sep_text.normal_fill, 'normal_fill'},
                     { M.tab_name(data.tab_index), 'normal' },
+                    { sep_text.normal_fill, 'normal_fill'},
+
                     { text_end,                   hl_end },
                 }
             end
